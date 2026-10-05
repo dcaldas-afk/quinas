@@ -1,0 +1,65 @@
+Package  quinas;
+
+Helpers
+    any = [0 .. 0xffff];
+    espaco = ' ';
+    tab = 9;
+    rc = 13;
+    nl = 10;
+    no_break = [any - [nl + rc]];
+    nao_menos = [any - '-'];
+    nao_menos_barra = [nao_menos - '/'];
+    digito = ['0' .. '9'];
+    digito_bin = ['0' .. '1'];
+    minuscula = ['a' .. 'z'];
+    maiuscula = ['A' .. 'Z'];
+    letra = maiuscula | minuscula;
+
+Tokens
+    numeral_int = digito+ | '0b' digito_bin+;
+    numeral_real = digito+ ',' digito+;
+    tipo_numero = 'numero';
+    tipo_booleano = 'booleano';
+    verdadeiro = 'V';
+    falso = 'F';
+
+    id_const = maiuscula maiuscula+;
+    id_funcao = maiuscula letra+;
+    id = letra letra+;
+
+    soma = '+';
+    menos = '-';
+    mult = '.';
+    div = '/';
+    resto = '\';
+    div_int = '//';
+    potencia = '´';
+
+    maior = '>>';
+    menor = '<<';
+    igual = '==';
+    igual_simples = '=';
+
+    col_esq = '[';
+    col_dir = ']';
+    par_esq = '<';
+    par_dir = '>';
+    
+    and = '^';
+    not = '¬';
+    or = 'v';
+
+    guarda = '||';
+    pipe = '|';
+    dois_pts = ':';
+    declar_funct = '++';
+    sustenido = '#';
+    comentario_linha = '--' no_break*;
+    comentario_bloco = '/--' (nao_menos | '-' nao_menos | '--' '-'* nao_menos_barra)* '-'* '--/';
+    
+    vazio = (espaco | tab | rc | nl)+;
+
+Ignored Tokens
+    vazio,
+    comentario_linha,
+    comentario_bloco;
