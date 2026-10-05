@@ -1,0 +1,45 @@
+/-- Usando primitivas (Seno, cosseno, tangente e log), alta ordem
+e novas funções trigonométricas
+ --/
+
+[numero Dividir [numero xx | numero yy]:
+    [
+        xx / yy
+    ]
+]
+
+[numero CalcularAltura [numero angulo | numero distancia]:
+    [
+        distancia . Tangente[angulo]
+    ]
+]
+
+[numero CalcularTg [numero angulo | numero Op[numero | numero]]:
+    [
+        Op[Seno[angulo] | Cosseno[angulo]]
+    ]
+]
+
+[numero Ph [numero xx]:
+    [
+        -Logaritmo[xx]
+    ]
+]
+
+[numero Secante [numero angulo]:
+    [
+        1 / Cosseno[angulo]
+    ]
+]
+
+[numero Cossecante [numero angulo]:
+    [
+        1 / Seno[angulo]
+    ]
+]
+
+++ [numero Main []:
+    [
+        CalcularTg[3,14 | Dividir]
+    ]
+]

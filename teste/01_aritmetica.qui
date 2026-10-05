@@ -1,0 +1,40 @@
+-- Operações aritméticas básicas, literais e constantes
+
+[numero AplicarDesconto [numero preco | numero percentual]:
+    [
+        preco - <preco . percentual / 100>
+    ]
+]
+
+[numero Media [numero xx | numero yy]:
+    [
+        <xx + yy> / 2
+    ]
+]
+
+[numero Potencia [numero base | numero expoente]:
+    [
+        base ´ expoente
+    ]
+]
+
+[numero DivisaoInteira [numero xx | numero yy]:
+    [
+        xx // yy
+    ]
+]
+
+[numero AreaCirculo [numero raio]:
+    [
+        [
+            [¨ numero pi [3,14]]
+            pi . raio .raio
+        ]
+    ]
+]
+
+++ [numero Main []:
+    [
+        Media[0b1010 | AreaCirculo[5]]
+    ]
+]

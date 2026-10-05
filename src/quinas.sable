@@ -1,33 +1,44 @@
-Package quinas;
+Package  quinas;
 
 Helpers
- digito = ['0' .. '9'];
- espaco = ' ';
- rc = 13;
- nl = 10;
- maius = ['A' .. 'Z'];
- minus = ['a' .. 'z'];
- letra = maius | minus;
- 
-Tokens
- numero = digito+;
- id = letra letra+;
- id_funcao = maius letra+
- id_const = maius maius+
- soma = '+';
- menos = '-';
- mult = '.';
- div_real = '/';
- mod = '\';
- div_int = '//';
- igual = '==';
- and = '^';
- not = '¬';
- or = 'v';
- par_esq = '<';
- par_dir = '>';
- vazio = (espaco | rc | nl)+;
+    digito = ['0' .. '9'];
+    minuscula = ['a' .. 'z'];
+    maiuscula = ['A' .. 'Z'];
+    letra = maiuscula | minuscula;
+    espaco = ' ';
+    tab = 9;
+    rc = 13;
+    nl = 10;
 
+Tokens
+    numeral_int = digito+;
+
+    id_const = maiuscula maiuscula+;
+    id_funcao = maiuscula letra+;
+    id = letra letra+;
+
+    soma = '+';
+    menos = '-';
+    mult = '.';
+    div = '/';
+    resto = '\';
+    div_int = '//';
+    potencia = '´';
+
+    maior = '>>';
+    menor = '<<';
+    igual = '==';
+
+    col_esq = '[';
+    col_dir = ']';
+    par_esq = '<';
+    par_dir = '>';
+    
+    and = '^';
+    not = '¬';
+    or = 'v';
+    
+    vazio = (espaco | tab | rc | nl)+;
 
 Ignored Tokens
- vazio;
+    vazio;

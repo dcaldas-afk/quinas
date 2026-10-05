@@ -1,0 +1,53 @@
+-- Booleanos, guardas, operadores, menos unário e recursão
+
+[numero ValorAbsoluto [numero nn]:
+    [
+        || <nn << 0> = -nn
+        || # = nn
+    ]
+]
+
+[booleano EhPar [numero nn]:
+    [
+        nn \ 2 == 0
+    ]
+]
+
+[booleano EhImpar [numero nn]:
+    [
+        ¬ EhPar[nn]
+    ]
+]
+
+[booleano PositivoEPar [numero nn]:
+    [
+        <nn >> 0> ^ EhPar[nn]
+    ]
+]
+
+[booleano PositivoOuPar [numero nn]:
+    [
+        <nn >> 0> v EhPar[nn]
+    ]
+]
+
+[booleano TemDivisor [numero xx | numero nn] :
+    [
+        || <nn == 1> = F
+        || <xx \ nn == 0> = V
+        || # = TemDivisor[xx | nn - 1]
+    ]
+]
+
+[booleano Primo [numero xx] :
+    [
+        || <xx << 2> = F
+        || # = ¬TemDivisor[xx | xx - 1]
+    ] 
+]
+
+++ [booleano Main []:
+    [
+        Primo[7]
+    ]
+]
