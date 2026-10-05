@@ -1,0 +1,5 @@
+[numero AplicarDesconto [numero preco | numero percentual]:
+    [
+        preco - <preco . percentual / 100>
+    ]
+]

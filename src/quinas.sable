@@ -9,6 +9,7 @@ Helpers
     tab = 9;
     rc = 13;
     nl = 10;
+    invalidos = '@' | '_' | '$' | '´' | '+' | '-' | '^' | '%' | '`' | 'ç';
 
 Tokens
     numeral_int = digito+;
@@ -16,7 +17,7 @@ Tokens
     id_const = maiuscula maiuscula+;
     id_funcao = maiuscula letra+;
     id = letra letra+;
-
+	
     soma = '+';
     menos = '-';
     mult = '.';
@@ -24,7 +25,12 @@ Tokens
     resto = '\';
     div_int = '//';
     potencia = '´';
-
+    
+    decimal = digito+ ',' digito+;
+    inteiro = ('+' | '-')? digito+;
+    binario = '0b'('0' | '1')+;
+	booleano = ('V' | 'F');
+	
     maior = '>>';
     menor = '<<';
     igual = '==';
@@ -38,7 +44,13 @@ Tokens
     not = '¬';
     or = 'v';
     
-    vazio = (espaco | tab | rc | nl)+;
+    marcador = '++';
+    guarda = '||';
+    sustenido = '#';
+    pipe = '|';
+    igual_simples = '=';
+    
+    vazio = (espaco | tab | rc | nl | invalidos)+;
 
 Ignored Tokens
     vazio;

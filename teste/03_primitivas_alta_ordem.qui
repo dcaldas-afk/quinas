@@ -1,6 +1,4 @@
-/-- Usando primitivas (Seno, cosseno, tangente e log), alta ordem
-e novas funções trigonométricas
- --/
+
 
 [numero Dividir [numero xx | numero yy]:
     [

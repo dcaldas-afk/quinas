@@ -27,8 +27,8 @@
 [numero AreaCirculo [numero raio]:
     [
         [
-            [¨ numero pi [3,14]]
-            pi . raio .raio
+            [ numero PI [3,14]]
+            PI . raio .raio
         ]
     ]
 ]
