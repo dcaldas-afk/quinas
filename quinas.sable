@@ -10,18 +10,16 @@ Helpers
     nao_menos = [any - '-'];
     nao_menos_barra = [nao_menos - '/'];
     digito = ['0' .. '9'];
-    digito_bin = ['0' .. '1'];
     minuscula = ['a' .. 'z'];
     maiuscula = ['A' .. 'Z'];
     letra = maiuscula | minuscula;
 
 Tokens
-    numeral_int = digito+ | '0b' digito_bin+;
+    numeral_int = digito+ | '0b'('0' | '1')+;
     numeral_real = digito+ ',' digito+;
     tipo_numero = 'numero';
     tipo_booleano = 'booleano';
-    verdadeiro = 'V';
-    falso = 'F';
+    literal_booleano = 'V' | 'F';
 
     id_const = maiuscula maiuscula+;
     id_funcao = maiuscula letra+;
