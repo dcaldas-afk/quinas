@@ -1,6 +1,1 @@
-bin/
-.settings/
-.classpath
-.project
-.metadada/
-*.class
+log.txt
