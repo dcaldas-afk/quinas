@@ -11,10 +11,10 @@ all:
 	cp $(SRC)/quinas/lexer/lexer.dat $(BIN)/quinas/lexer/
 
 test:
-	java -cp $(BIN) QuinasLexer $(T)
+	java -cp $(BIN) $(LEXER) $(T)
 
 debug:
-	java -cp $(BIN) QuinasLexer $(T) > $(LOG)
+	java -cp $(BIN) $(LEXER) $(T) > $(LOG)
 
 clean:
 	rm -rf $(LOG) $(BIN) $(SRC)/quinas
