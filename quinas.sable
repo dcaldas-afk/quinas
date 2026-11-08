@@ -60,6 +60,7 @@ Tokens
 Ignored Tokens
     vazio,
     comentario_linha,
+<<<<<<< HEAD
     comentario_bloco;
 
 Productions
@@ -117,3 +118,6 @@ Productions
     
     arg =
         {arg_comum} exp | {funcao_como_arg} id_funcao;
+=======
+    comentario_bloco;
+>>>>>>> af44edf5e2b22954155cfc0b1bc390500ced654f
