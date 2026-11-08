@@ -1,0 +1,119 @@
+Package  quinas;
+
+Helpers
+    any = [0 .. 0xffff];
+    espaco = ' ';
+    tab = 9;
+    rc = 13;
+    nl = 10;
+    no_break = [any - [nl + rc]];
+    nao_menos = [any - '-'];
+    nao_menos_barra = [nao_menos - '/'];
+    digito = ['0' .. '9'];
+    minuscula = ['a' .. 'z'];
+    maiuscula = ['A' .. 'Z'];
+    letra = maiuscula | minuscula;
+
+Tokens
+    numeral_int = digito+ | '0b'('0' | '1')+;
+    numeral_real = digito+ ',' digito+;
+    tipo_numero = 'numero';
+    tipo_booleano = 'booleano';
+    literal_booleano = 'V' | 'F';
+
+    id_const = maiuscula maiuscula+;
+    id_funcao = maiuscula letra+;
+    id = letra letra+;
+
+    soma = '+';
+    menos = '-';
+    mult = '.';
+    div = '/';
+    resto = '\';
+    div_int = '//';
+    potencia = '´';
+
+    maior = '>>';
+    menor = '<<';
+    igual = '==';
+    igual_simples = '=';
+
+    col_esq = '[';
+    col_dir = ']';
+    par_esq = '<';
+    par_dir = '>';
+    
+    and = '^';
+    not = '¬';
+    or = 'v';
+
+    guarda = '||';
+    pipe = '|';
+    dois_pts = ':';
+    declar_funct = '++';
+    sustenido = '#';
+    comentario_linha = '--' no_break*;
+    comentario_bloco = '/--' (nao_menos | '-' nao_menos | '--' '-'* nao_menos_barra)* '-'* '--/';
+    
+    vazio = (espaco | tab | rc | nl)+;
+
+Ignored Tokens
+    vazio,
+    comentario_linha,
+    comentario_bloco;
+
+Productions
+    programa =
+        dec_funcao+;
+
+    dec_funcao =
+        declar_funct?
+        [ini_funcao]:col_esq
+        tipo id_funcao
+        [ini_lst_param]:col_esq 
+        lista_parametros?
+        [fim_lst_param]:col_dir
+        dois_pts
+        [ini_exp]:col_esq
+        exp
+        [fim_exp]:col_dir
+        [fim_funcao]:col_dir;
+    
+    tipo =
+        {numero} tipo_numero | {booleano} tipo_booleano;
+
+    lista_parametros =
+        {param_unico} parametro | {multi_param} lista_parametros pipe parametro;
+
+    parametro =
+        {tipo_id} tipo id | {assinatura} assinatura;
+    
+    assinatura =
+        tipo id_funcao col_esq parametros_assinatura? col_dir;
+    
+    parametros_assinatura =
+        {assinatura_unica} parametro_assinatura | {multi_assinatura} parametros_assinatura pipe parametro_assinatura;
+
+    parametro_assinatura =
+        {tipo} tipo | {assinatura} assinatura;
+    
+    bloco_exp =
+        col_esq dec_cons+ exp col_dir;
+    
+    dec_cons =
+        [ini_const]:col_esq
+        tipo
+        id_const
+        [ini_exp]:col_esq
+        exp
+        [fim_exp]:col_dir
+        [fim_const]:col_dir;
+    
+    chamada =
+        id_funcao col_esq lista_args? col_dir;
+    
+    lista_args =
+        {arg_unico} arg | {multi_arg} lista_args pipe arg;
+    
+    arg =
+        {arg_comum} exp | {funcao_como_arg} id_funcao;

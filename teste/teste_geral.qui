@@ -1,0 +1,226 @@
+-- TESTE GERAL DO LEXER DE QUINAS
+-- Este arquivo foi pensado para exercitar praticamente todos os tokens válidos.
+
+-- ============================================================
+-- 1. Tipos, booleanos, identificadores e números
+-- ============================================================
+
+numero
+booleano
+
+V
+F
+
+xx
+valor
+abCd
+
+Somar
+CalculaMedia
+FuncaoTeste
+
+PI
+MAXIMO
+CONSTANTE
+
+0
+1
+42
+123456
+0b0
+0b1
+0b1010
+0b111111
+3,14
+0,5
+123,456
+
+-- ============================================================
+-- 2. Operadores aritméticos
+-- ============================================================
+
++ - . / \ // ´
+
+-- Casos para testar maximal munch
+/ //
++ ++
+
+-- ============================================================
+-- 3. Operadores relacionais e precedência
+-- ============================================================
+
+> >>
+< <<
+= ==
+
+<xx + yy>
+<10 >> 5>
+<3 << 7>
+
+-- ============================================================
+-- 4. Operadores booleanos
+-- ============================================================
+
+^
+¬
+v
+
+<V ^ F>
+<¬ V>
+<V v F>
+
+-- ============================================================
+-- 5. Símbolos estruturais
+-- ============================================================
+
+[
+]
+<
+>
+|
+||
+:
+++
+#
+=
+¨
+
+-- ============================================================
+-- 6. Declarações e expressões parecidas com código Quinas
+-- ============================================================
+
+[numero Somar [numero xx | numero yy]:
+    [
+        xx + yy
+    ]
+]
+
+[numero Subtrair [numero xx | numero yy]:
+    [
+        xx - yy
+    ]
+]
+
+[numero Multiplicar [numero xx | numero yy]:
+    [
+        xx . yy
+    ]
+]
+
+[numero Dividir [numero xx | numero yy]:
+    [
+        xx / yy
+    ]
+]
+
+[numero DividirInteiro [numero xx | numero yy]:
+    [
+        xx // yy
+    ]
+]
+
+[numero Resto [numero xx | numero yy]:
+    [
+        xx \ yy
+    ]
+]
+
+[numero Potencia [numero base | numero expoente]:
+    [
+        base ´ expoente
+    ]
+]
+
+[booleano Maior [numero xx | numero yy]:
+    [
+        xx >> yy
+    ]
+]
+
+[booleano Menor [numero xx | numero yy]:
+    [
+        xx << yy
+    ]
+]
+
+[booleano Igual [numero xx | numero yy]:
+    [
+        xx == yy
+    ]
+]
+
+[booleano Logica [booleano aa | booleano bb]:
+    [
+        <aa ^ bb> v <¬ aa>
+    ]
+]
+
+-- ============================================================
+-- 7. Guarda
+-- ============================================================
+
+[numero Max [numero xx | numero yy]:
+    [
+        || <xx >> yy> = xx
+        || # = yy
+    ]
+]
+
+-- ============================================================
+-- 8. Constante
+-- ============================================================
+
+[numero Area [numero raio]:
+    [
+        [
+            [¨ numero pi PI [3,14]]
+            PI . raio . raio
+        ]
+    ]
+]
+
+-- ============================================================
+-- 9. Chamada de função
+-- ============================================================
+
+[numero Aplicar [numero xx | numero yy]:
+    [
+        Somar[xx | yy]
+    ]
+]
+
+-- ============================================================
+-- 10. Comentário de bloco
+-- ============================================================
+
+/--
+Este é um comentário de bloco.
+Pode ter várias linhas.
+Pode conter símbolos como + - . / // \ ^ ¬ v >> << ==.
+Pode conter colchetes [ ] e < >.
+Pode até conter a sequência /-- sem abrir comentário aninhado.
+O primeiro terminador válido abaixo encerra o comentário.
+--/
+
+-- ============================================================
+-- 11. Função principal
+-- ============================================================
+
+++ [numero Principal []:
+    [
+        Somar[0b1010 | 3,14]
+    ]
+]
+
+-- ============================================================
+-- 12. Casos inválidos para testar SEPARADAMENTE
+-- Não descomente todos de uma vez, porque o lexer para no
+-- primeiro erro léxico encontrado.
+-- ============================================================
+
+-- @
+-- _
+-- 0b102
+-- 12,
+-- ,5
+-- /-- comentario de bloco sem fechamento
