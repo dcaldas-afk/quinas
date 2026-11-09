@@ -1,23 +1,30 @@
 Package  quinas;
 
 Helpers
-    digito = ['0' .. '9'];
-    minuscula = ['a' .. 'z'];
-    maiuscula = ['A' .. 'Z'];
-    letra = maiuscula | minuscula;
+    any = [0 .. 0xffff];
     espaco = ' ';
     tab = 9;
     rc = 13;
     nl = 10;
-    invalidos = '@' | '_' | '$' | '´' | '+' | '-' | '^' | '%' | '`' | 'ç';
+    no_break = [any - [nl + rc]];
+    nao_menos = [any - '-'];
+    nao_menos_barra = [nao_menos - '/'];
+    digito = ['0' .. '9'];
+    minuscula = ['a' .. 'z'];
+    maiuscula = ['A' .. 'Z'];
+    letra = maiuscula | minuscula;
 
 Tokens
-    numeral_int = digito+;
+    numeral_int = digito+ | '0b'('0' | '1')+;
+    numeral_real = digito+ ',' digito+;
+    tipo_numero = 'numero';
+    tipo_booleano = 'booleano';
+    literal_booleano = 'V' | 'F';
 
     id_const = maiuscula maiuscula+;
     id_funcao = maiuscula letra+;
     id = letra letra+;
-	
+
     soma = '+';
     menos = '-';
     mult = '.';
@@ -25,15 +32,11 @@ Tokens
     resto = '\';
     div_int = '//';
     potencia = '´';
-    
-    decimal = digito+ ',' digito+;
-    inteiro = ('+' | '-')? digito+;
-    binario = '0b'('0' | '1')+;
-	booleano = ('V' | 'F');
-	
+
     maior = '>>';
     menor = '<<';
     igual = '==';
+    igual_simples = '=';
 
     col_esq = '[';
     col_dir = ']';
@@ -43,14 +46,140 @@ Tokens
     and = '^';
     not = '¬';
     or = 'v';
-    
-    marcador = '++';
+
     guarda = '||';
-    sustenido = '#';
     pipe = '|';
-    igual_simples = '=';
+    dois_pts = ':';
+    declar_funct = '++';
+    sustenido = '#';
+    comentario_linha = '--' no_break*;
+    comentario_bloco = '/--' (nao_menos | '-' nao_menos | '--' '-'* nao_menos_barra)* '-'* '--/';
     
-    vazio = (espaco | tab | rc | nl | invalidos)+;
+    vazio = (espaco | tab | rc | nl)+;
 
 Ignored Tokens
-    vazio;
+    vazio,
+    comentario_linha,
+<<<<<<< HEAD
+    comentario_bloco;
+
+Productions
+    programa =
+        dec_funcao+;
+
+    dec_funcao =
+        declar_funct?
+        [ini_funcao]:col_esq
+        tipo id_funcao
+        [ini_lst_param]:col_esq 
+        lista_parametros?
+        [fim_lst_param]:col_dir
+        dois_pts
+        [ini_exp]:col_esq
+        exp
+        [fim_exp]:col_dir
+        [fim_funcao]:col_dir;
+    
+    tipo =
+        {numero} tipo_numero | {booleano} tipo_booleano;
+
+    lista_parametros =
+        {param_unico} parametro | {multi_param} lista_parametros pipe parametro;
+
+    parametro =
+        {tipo_id} tipo id | {assinatura} assinatura;
+    
+    assinatura =
+        tipo id_funcao col_esq parametros_assinatura? col_dir;
+    
+    parametros_assinatura =
+        {assinatura_unica} parametro_assinatura | {multi_assinatura} parametros_assinatura pipe parametro_assinatura;
+
+    parametro_assinatura =
+        {tipo} tipo | {assinatura} assinatura;
+        
+    
+    	
+    expr_ou =
+    	{and} expr_e
+    	| {or} expr_ou or expr_e;
+    
+    
+    expr_e =
+    	{igual} expr_igual
+    	| {and} expr_e and expr_igual;
+    	
+    	
+    expr_igual =
+   		{relacional} expr_r
+   		| {igual} expr_igual igual expr_r;
+   		
+   		
+    expr_r =
+   		{soma} expr_soma
+   		| {maior} expr_r maior expr_soma
+   		| {menor} expr_r menor expr_soma;
+   
+   
+    expr_soma = 
+   		{mult} expr_mult
+   		| {soma} expr_soma soma expr_mult
+   		| {menos} expr_soma menos expr_mult;
+   
+   
+    expr_mult =
+   		{potencia} expr_pot
+   		| {mult} expr_mult mult expr_pot
+   		| {div} expr_mult div expr_pot
+   		| {div_int} expr_mult div_int expr_pot
+   		| {resto} expr_mult resto expr_pot;
+    
+    
+    expr_pot =
+   		{unario} expr_un
+   		| {potencia} expr_un potencia expr_pot;
+    
+    
+    expr_un =
+    	{termo} termo
+    	| {menos_un} menos expr_un;
+    	| {nao_un} not expr_un;
+    
+    
+    termo = 
+    	{inteiro} numeral_int
+    	| {real} numeral_real
+    	| {literal} literal_booleano
+    	| {id} id
+    	| {idconst} id_const
+    	| {bloco} bloco_exp
+    	| {chamada} chamada
+    	| {guarda} guarda
+    	| {par} par_esq expr_ou par_dir; 
+    
+    
+    guarda = col_esq 
+    	
+    bloco_exp =
+        col_esq dec_cons+ exp col_dir;
+    
+    dec_cons =
+        [ini_const]:col_esq
+        tipo
+        id_const
+        [ini_exp]:col_esq
+        exp
+        [fim_exp]:col_dir
+        [fim_const]:col_dir;
+    
+    chamada =
+        id_funcao col_esq lista_args? col_dir;
+    
+    lista_args =
+        {arg_unico} arg | {multi_arg} lista_args pipe arg;
+    
+    arg =
+        {arg_comum} exp | {funcao_como_arg} id_funcao;
+=======
+    comentario_bloco;
+>>>>>>> af44edf5e2b22954155cfc0b1bc390500ced654f
