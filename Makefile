@@ -1,24 +1,40 @@
 SABLE = quinas.sable
-SRC = src
+SRC = src/quinas
 BIN = bin
-LEXER = QuinasLexer.java
-LOG = log.txt
+
+LEXER_DIR = $(BIN)/quinas/lexer
+PARSER_DIR = $(BIN)/quinas/parser
+TEST_DIR = tests/etapa3
+
+D ?= sucesso
+T ?= 18_soma_multiplicacao.qui
+
+LEXER_OBJ = $(SRC)/lexer/lexer.dat
+PARSER_OBJ = $(SRC)/parser/parser.dat
+
+MAIN = $(SRC)/Main.java
+DUMPER = $(SRC)/TreeDumper.java
+PRINTER = $(SRC)/ASTPrinter.java
+DISP = $(SRC)/ASTDisplay.java
+
+LOG = Tree.txt
 
 all:
-	sablecc $(SABLE) -d $(SRC)
+	sablecc $(SABLE) -d src
 	mkdir -p $(BIN)
-	javac -d $(BIN) $$(find $(SRC)/quinas -name "*.java") $(LEXER)
-	cp $(SRC)/quinas/lexer/lexer.dat $(BIN)/quinas/lexer/
+	javac -encoding UTF-8 -cp $(BIN) -d $(BIN) -sourcepath src $(MAIN) $(DUMPER) $(PRINTER) $(DISPLAY)
+	mkdir -p $(LEXER_DIR) $(PARSER_DIR)
+	cp $(LEXER_OBJ) $(LEXER_DIR)
+	cp $(PARSER_OBJ) $(PARSER_DIR)
 
-test:
-	java -cp $(BIN) $(LEXER) $(T)
-
-debug:
-	java -cp $(BIN) $(LEXER) $(T) > $(LOG)
+display:
+	java -cp $(BIN) quinas.Main $(TEST_DIR)/$(D)/$(T)
+tree:
+	java -cp $(BIN) quinas.TreeDumper $(TEST_DIR)/$(D)/$(T) > $(LOG)
 
 clean:
-	rm -rf $(LOG) $(BIN) $(SRC)/quinas
+	rm -rf $(BIN) $(LOG)
 
 re: clean all
 
-.PHONY: all test clean re
+.PHONY: all tree display clean re

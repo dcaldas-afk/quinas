@@ -23,7 +23,7 @@ Tokens
 
     id_const = maiuscula maiuscula+;
     id_funcao = maiuscula letra+;
-    id = letra letra+;
+    id = minuscula minuscula+;
 
     soma = '+';
     menos = '-';
@@ -60,7 +60,6 @@ Tokens
 Ignored Tokens
     vazio,
     comentario_linha,
-<<<<<<< HEAD
     comentario_bloco;
 
 Productions
@@ -118,6 +117,72 @@ Productions
     
     arg =
         {arg_comum} exp | {funcao_como_arg} id_funcao;
-=======
-    comentario_bloco;
->>>>>>> af44edf5e2b22954155cfc0b1bc390500ced654f
+    
+    guarda =
+        col_esq clausula+ T.guarda sustenido igual_simples exp col_dir;
+
+    clausula =
+        T.guarda
+        [condicao]:exp
+        igual_simples
+        [resultado]:exp;
+    
+    exp =
+        exp_ou;
+
+    exp_ou =
+    	{and} exp_e
+    	| {or} exp_ou or exp_e;
+    
+    
+    exp_e =
+    	{igual} exp_igual
+    	| {and} exp_e and exp_igual;
+    	
+    	
+    exp_igual =
+   		{relacional} exp_r
+   		| {igual} exp_igual igual exp_r;
+   		
+   		
+    exp_r =
+   		{soma} exp_soma
+   		| {maior} exp_r maior exp_soma
+   		| {menor} exp_r menor exp_soma;
+   
+   
+    exp_soma = 
+   		{mult} exp_mult
+   		| {soma} exp_soma soma exp_mult
+   		| {menos} exp_soma menos exp_mult;
+   
+   
+    exp_mult =
+   		{potencia} exp_pot
+   		| {mult} exp_mult mult exp_pot
+   		| {div} exp_mult div exp_pot
+   		| {inteira} exp_mult div_int exp_pot
+   		| {resto} exp_mult resto exp_pot;
+    
+    
+    exp_pot =
+   		{unario} exp_un
+   		| {potencia} exp_un potencia exp_pot;
+    
+    
+    exp_un =
+    	{termo} termo
+    	| {menos_un} menos exp_un
+    	| {nao_un} not exp_un;
+    
+    
+    termo = 
+    	{inteiro} numeral_int
+    	| {real} numeral_real
+    	| {literal} literal_booleano
+    	| {id} id
+    	| {idconst} id_const
+    	| {bloco} bloco_exp
+    	| {chamada} chamada
+    	| {guarda} P.guarda
+    	| {par} par_esq exp_ou par_dir;
