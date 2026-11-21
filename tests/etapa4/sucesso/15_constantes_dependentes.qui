@@ -1,0 +1,8 @@
+++ [numero Principal[] : [
+    [
+        [numero BASE [5]]
+        [numero DOBRO [BASE . 2]]
+        [numero TOTAL [DOBRO + BASE]]
+        TOTAL
+    ]
+]]

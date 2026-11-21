@@ -1,0 +1,11 @@
+++ [numero Principal[] : [
+    [
+        [numero AA [2]]
+        [numero BB [3]]
+        [
+            [numero CC [AA + BB]]
+            [numero DD [CC . 2]]
+            DD + BB
+        ]
+    ]
+]]

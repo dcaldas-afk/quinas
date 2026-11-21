@@ -6,12 +6,10 @@ import java.util.*;
 import quinas.analysis.*;
 
 @SuppressWarnings("nls")
-public final class ABlocoExp extends PBlocoExp
+public final class ABlocoExp extends PExp
 {
-    private TColEsq _colEsq_;
-    private final LinkedList<PDecCons> _decCons_ = new LinkedList<PDecCons>();
+    private final LinkedList<PDeclaracaoConstante> _declaracaoConstante_ = new LinkedList<PDeclaracaoConstante>();
     private PExp _exp_;
-    private TColDir _colDir_;
 
     public ABlocoExp()
     {
@@ -19,19 +17,13 @@ public final class ABlocoExp extends PBlocoExp
     }
 
     public ABlocoExp(
-        @SuppressWarnings("hiding") TColEsq _colEsq_,
-        @SuppressWarnings("hiding") List<?> _decCons_,
-        @SuppressWarnings("hiding") PExp _exp_,
-        @SuppressWarnings("hiding") TColDir _colDir_)
+        @SuppressWarnings("hiding") List<?> _declaracaoConstante_,
+        @SuppressWarnings("hiding") PExp _exp_)
     {
         // Constructor
-        setColEsq(_colEsq_);
-
-        setDecCons(_decCons_);
+        setDeclaracaoConstante(_declaracaoConstante_);
 
         setExp(_exp_);
-
-        setColDir(_colDir_);
 
     }
 
@@ -39,10 +31,8 @@ public final class ABlocoExp extends PBlocoExp
     public Object clone()
     {
         return new ABlocoExp(
-            cloneNode(this._colEsq_),
-            cloneList(this._decCons_),
-            cloneNode(this._exp_),
-            cloneNode(this._colDir_));
+            cloneList(this._declaracaoConstante_),
+            cloneNode(this._exp_));
     }
 
     @Override
@@ -51,54 +41,29 @@ public final class ABlocoExp extends PBlocoExp
         ((Analysis) sw).caseABlocoExp(this);
     }
 
-    public TColEsq getColEsq()
+    public LinkedList<PDeclaracaoConstante> getDeclaracaoConstante()
     {
-        return this._colEsq_;
+        return this._declaracaoConstante_;
     }
 
-    public void setColEsq(TColEsq node)
+    public void setDeclaracaoConstante(List<?> list)
     {
-        if(this._colEsq_ != null)
-        {
-            this._colEsq_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._colEsq_ = node;
-    }
-
-    public LinkedList<PDecCons> getDecCons()
-    {
-        return this._decCons_;
-    }
-
-    public void setDecCons(List<?> list)
-    {
-        for(PDecCons e : this._decCons_)
+        for(PDeclaracaoConstante e : this._declaracaoConstante_)
         {
             e.parent(null);
         }
-        this._decCons_.clear();
+        this._declaracaoConstante_.clear();
 
         for(Object obj_e : list)
         {
-            PDecCons e = (PDecCons) obj_e;
+            PDeclaracaoConstante e = (PDeclaracaoConstante) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
-            this._decCons_.add(e);
+            this._declaracaoConstante_.add(e);
         }
     }
 
@@ -127,52 +92,19 @@ public final class ABlocoExp extends PBlocoExp
         this._exp_ = node;
     }
 
-    public TColDir getColDir()
-    {
-        return this._colDir_;
-    }
-
-    public void setColDir(TColDir node)
-    {
-        if(this._colDir_ != null)
-        {
-            this._colDir_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        this._colDir_ = node;
-    }
-
     @Override
     public String toString()
     {
         return ""
-            + toString(this._colEsq_)
-            + toString(this._decCons_)
-            + toString(this._exp_)
-            + toString(this._colDir_);
+            + toString(this._declaracaoConstante_)
+            + toString(this._exp_);
     }
 
     @Override
     void removeChild(@SuppressWarnings("unused") Node child)
     {
         // Remove child
-        if(this._colEsq_ == child)
-        {
-            this._colEsq_ = null;
-            return;
-        }
-
-        if(this._decCons_.remove(child))
+        if(this._declaracaoConstante_.remove(child))
         {
             return;
         }
@@ -183,12 +115,6 @@ public final class ABlocoExp extends PBlocoExp
             return;
         }
 
-        if(this._colDir_ == child)
-        {
-            this._colDir_ = null;
-            return;
-        }
-
         throw new RuntimeException("Not a child.");
     }
 
@@ -196,19 +122,13 @@ public final class ABlocoExp extends PBlocoExp
     void replaceChild(@SuppressWarnings("unused") Node oldChild, @SuppressWarnings("unused") Node newChild)
     {
         // Replace child
-        if(this._colEsq_ == oldChild)
-        {
-            setColEsq((TColEsq) newChild);
-            return;
-        }
-
-        for(ListIterator<PDecCons> i = this._decCons_.listIterator(); i.hasNext();)
+        for(ListIterator<PDeclaracaoConstante> i = this._declaracaoConstante_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set((PDecCons) newChild);
+                    i.set((PDeclaracaoConstante) newChild);
                     newChild.parent(this);
                     oldChild.parent(null);
                     return;
@@ -223,12 +143,6 @@ public final class ABlocoExp extends PBlocoExp
         if(this._exp_ == oldChild)
         {
             setExp((PExp) newChild);
-            return;
-        }
-
-        if(this._colDir_ == oldChild)
-        {
-            setColDir((TColDir) newChild);
             return;
         }
 

@@ -1,0 +1,7 @@
+[numero Soma[numero aa | numero bb] : [
+    aa + bb
+]]
+
+++ [numero Principal[] : [
+    Soma[2 | 3]
+]]

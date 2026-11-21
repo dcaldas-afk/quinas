@@ -1,0 +1,11 @@
+[numero Soma[numero aa | numero bb] : [
+    aa + bb
+]]
+
+[numero Aplica[numero xx | numero yy | numero Op[numero | numero]] : [
+    Op[xx | yy]
+]]
+
+++ [numero Principal[] : [
+    Aplica[7 | 5 | Soma]
+]]

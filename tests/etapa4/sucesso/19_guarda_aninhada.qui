@@ -1,0 +1,8 @@
+++ [numero Principal[numero xx] : [
+    [|| xx >> 10 =
+        [|| xx >> 20 = xx . 2
+         || # = xx + 1]
+     || xx == 10 = xx
+     || xx << 10 = 0
+     || # = xx - 1]
+]]

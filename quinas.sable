@@ -63,126 +63,220 @@ Ignored Tokens
     comentario_bloco;
 
 Productions
-    programa =
-        dec_funcao+;
+    programa {-> programa} =
+        dec_funcao+
+        {-> New programa.raiz([dec_funcao.funcao])};
 
-    dec_funcao =
+    dec_funcao {-> funcao} =
         declar_funct?
         [ini_funcao]:col_esq
         tipo id_funcao
-        [ini_lst_param]:col_esq 
+        [ini_lst_param]:col_esq
         lista_parametros?
         [fim_lst_param]:col_dir
         dois_pts
         [ini_exp]:col_esq
         exp
         [fim_exp]:col_dir
-        [fim_funcao]:col_dir;
-    
-    tipo =
-        {numero} tipo_numero | {booleano} tipo_booleano;
+        [fim_funcao]:col_dir
+        {-> New funcao.definicao(declar_funct, tipo.tipo, id_funcao, lista_parametros.parametros, exp.exp)};
 
-    lista_parametros =
-        {param_unico} parametro | {multi_param} lista_parametros pipe parametro;
+    tipo {-> tipo} =
+        {numero} tipo_numero {-> New tipo.numero(tipo_numero)}
+        | {booleano} tipo_booleano {-> New tipo.booleano(tipo_booleano)};
 
-    parametro =
-        {tipo_id} tipo id | {assinatura} assinatura;
-    
-    assinatura =
-        tipo id_funcao col_esq parametros_assinatura? col_dir;
-    
-    parametros_assinatura =
-        {assinatura_unica} parametro_assinatura | {multi_assinatura} parametros_assinatura pipe parametro_assinatura;
+    lista_parametros {-> parametros} =
+        {param_unico} parametro
+            {-> New parametros.unico(parametro.parametro)}
+        | {multi_param} [anteriores]:lista_parametros pipe [atual]:parametro
+            {-> New parametros.varios(anteriores.parametros, atual.parametro)};
 
-    parametro_assinatura =
-        {tipo} tipo | {assinatura} assinatura;
-    
-    bloco_exp =
-        col_esq dec_cons+ exp col_dir;
-    
-    dec_cons =
+    parametro {-> parametro} =
+        {tipo_id} tipo id {-> New parametro.primitivo(tipo.tipo, id)}
+        | {assinatura} assinatura {-> New parametro.funcao(assinatura.assinatura)};
+
+    assinatura {-> assinatura} =
+        tipo id_funcao col_esq parametros_assinatura? col_dir
+        {-> New assinatura.definicao(tipo.tipo, id_funcao, parametros_assinatura.parametros_assinatura)};
+
+    parametros_assinatura {-> parametros_assinatura} =
+        {assinatura_unica} parametro_assinatura
+            {-> New parametros_assinatura.unico(parametro_assinatura.parametro_assinatura)}
+        | {multi_assinatura} [anteriores]:parametros_assinatura pipe [atual]:parametro_assinatura
+            {-> New parametros_assinatura.varios(anteriores.parametros_assinatura, atual.parametro_assinatura)};
+
+    parametro_assinatura {-> parametro_assinatura} =
+        {tipo} tipo {-> New parametro_assinatura.primitivo(tipo.tipo)}
+        | {assinatura} assinatura {-> New parametro_assinatura.funcao(assinatura.assinatura)};
+
+    bloco_exp {-> exp} =
+        col_esq dec_cons+ exp col_dir
+        {-> New exp.bloco([dec_cons.declaracao_constante], exp.exp)};
+
+    dec_cons {-> declaracao_constante} =
         [ini_const]:col_esq
         tipo
         id_const
         [ini_exp]:col_esq
         exp
         [fim_exp]:col_dir
-        [fim_const]:col_dir;
-    
-    chamada =
-        id_funcao col_esq lista_args? col_dir;
-    
-    lista_args =
-        {arg_unico} arg | {multi_arg} lista_args pipe arg;
-    
-    arg =
-        {arg_comum} exp | {funcao_como_arg} id_funcao;
-    
-    guarda =
-        col_esq clausula+ T.guarda sustenido igual_simples exp col_dir;
+        [fim_const]:col_dir
+        {-> New declaracao_constante.definicao(tipo.tipo, id_const, exp.exp)};
 
-    clausula =
+    chamada {-> exp} =
+        id_funcao col_esq lista_args? col_dir
+        {-> New exp.chamada(id_funcao, lista_args.argumentos)};
+
+    lista_args {-> argumentos} =
+        {arg_unico} arg {-> New argumentos.unico(arg.argumento)}
+        | {multi_arg} [anteriores]:lista_args pipe [atual]:arg
+            {-> New argumentos.varios(anteriores.argumentos, atual.argumento)};
+
+    arg {-> argumento} =
+        {arg_comum} exp {-> New argumento.expressao(exp.exp)}
+        | {funcao_como_arg} id_funcao {-> New argumento.funcao(id_funcao)};
+
+    guarda {-> exp} =
+        col_esq clausula+ T.guarda sustenido igual_simples exp col_dir
+        {-> New exp.guarda([clausula.clausula], exp.exp)};
+
+    clausula {-> clausula} =
         T.guarda
         [condicao]:exp
         igual_simples
-        [resultado]:exp;
-    
-    exp =
-        exp_ou;
+        [resultado]:exp
+        {-> New clausula.caso(condicao.exp, resultado.exp)};
 
-    exp_ou =
-    	{and} exp_e
-    	| {or} exp_ou or exp_e;
-    
-    
-    exp_e =
-    	{igual} exp_igual
-    	| {and} exp_e and exp_igual;
-    	
-    	
-    exp_igual =
-   		{relacional} exp_r
-   		| {igual} exp_igual igual exp_r;
-   		
-   		
-    exp_r =
-   		{soma} exp_soma
-   		| {maior} exp_r maior exp_soma
-   		| {menor} exp_r menor exp_soma;
-   
-   
-    exp_soma = 
-   		{mult} exp_mult
-   		| {soma} exp_soma soma exp_mult
-   		| {menos} exp_soma menos exp_mult;
-   
-   
-    exp_mult =
-   		{potencia} exp_pot
-   		| {mult} exp_mult mult exp_pot
-   		| {div} exp_mult div exp_pot
-   		| {inteira} exp_mult div_int exp_pot
-   		| {resto} exp_mult resto exp_pot;
-    
-    
-    exp_pot =
-   		{unario} exp_un
-   		| {potencia} exp_un potencia exp_pot;
-    
-    
-    exp_un =
-    	{termo} termo
-    	| {menos_un} menos exp_un
-    	| {nao_un} not exp_un;
-    
-    
-    termo = 
-    	{inteiro} numeral_int
-    	| {real} numeral_real
-    	| {literal} literal_booleano
-    	| {id} id
-    	| {idconst} id_const
-    	| {bloco} bloco_exp
-    	| {chamada} chamada
-    	| {guarda} P.guarda
-    	| {par} par_esq exp_ou par_dir;
+    exp {-> exp} =
+        exp_ou {-> exp_ou.exp};
+
+    exp_ou {-> exp} =
+        {and} exp_e {-> exp_e.exp}
+        | {or} [esq]:exp_ou or [dir]:exp_e
+            {-> New exp.ou(esq.exp, dir.exp)};
+
+    exp_e {-> exp} =
+        {igual} exp_igual {-> exp_igual.exp}
+        | {and} [esq]:exp_e and [dir]:exp_igual
+            {-> New exp.e(esq.exp, dir.exp)};
+
+    exp_igual {-> exp} =
+        {relacional} exp_r {-> exp_r.exp}
+        | {igual} [esq]:exp_igual igual [dir]:exp_r
+            {-> New exp.igual(esq.exp, dir.exp)};
+
+    exp_r {-> exp} =
+        {soma} exp_soma {-> exp_soma.exp}
+        | {maior} [esq]:exp_r maior [dir]:exp_soma
+            {-> New exp.maior(esq.exp, dir.exp)}
+        | {menor} [esq]:exp_r menor [dir]:exp_soma
+            {-> New exp.menor(esq.exp, dir.exp)};
+
+    exp_soma {-> exp} =
+        {mult} exp_mult {-> exp_mult.exp}
+        | {soma} [esq]:exp_soma soma [dir]:exp_mult
+            {-> New exp.soma(esq.exp, dir.exp)}
+        | {menos} [esq]:exp_soma menos [dir]:exp_mult
+            {-> New exp.subtracao(esq.exp, dir.exp)};
+
+    exp_mult {-> exp} =
+        {unario} exp_un {-> exp_un.exp}
+        | {mult} [esq]:exp_mult mult [dir]:exp_un
+            {-> New exp.multiplicacao(esq.exp, dir.exp)}
+        | {div} [esq]:exp_mult div [dir]:exp_un
+            {-> New exp.divisao(esq.exp, dir.exp)}
+        | {inteira} [esq]:exp_mult div_int [dir]:exp_un
+            {-> New exp.divisao_inteira(esq.exp, dir.exp)}
+        | {resto} [esq]:exp_mult resto [dir]:exp_un
+            {-> New exp.resto(esq.exp, dir.exp)};
+
+    exp_un {-> exp} =
+        {potencia} exp_pot {-> exp_pot.exp}
+        | {menos_un} menos exp_un
+            {-> New exp.menos_unario(exp_un.exp)}
+        | {nao_un} not exp_un
+            {-> New exp.negacao(exp_un.exp)};
+
+    exp_pot {-> exp} =
+        {termo} termo {-> termo.exp}
+        | {potencia} [base]:termo potencia [expoente]:exp_un
+            {-> New exp.potencia(base.exp, expoente.exp)};
+
+    termo {-> exp} =
+        {inteiro} numeral_int {-> New exp.inteiro(numeral_int)}
+        | {real} numeral_real {-> New exp.real(numeral_real)}
+        | {literal} literal_booleano {-> New exp.booleano(literal_booleano)}
+        | {id} id {-> New exp.identificador(id)}
+        | {idconst} id_const {-> New exp.constante(id_const)}
+        | {bloco} bloco_exp {-> bloco_exp.exp}
+        | {chamada} chamada {-> chamada.exp}
+        | {guarda} P.guarda {-> guarda.exp}
+        | {par} par_esq exp_ou par_dir {-> exp_ou.exp};
+
+Abstract Syntax Tree
+    programa =
+        {raiz} funcao+;
+
+    funcao =
+        {definicao} declar_funct? tipo id_funcao parametros? exp;
+
+    tipo =
+        {numero} tipo_numero
+        | {booleano} tipo_booleano;
+
+    parametros =
+        {unico} parametro
+        | {varios} parametros parametro;
+
+    parametro =
+        {primitivo} tipo id
+        | {funcao} assinatura;
+
+    assinatura =
+        {definicao} tipo id_funcao parametros_assinatura?;
+
+    parametros_assinatura =
+        {unico} parametro_assinatura
+        | {varios} parametros_assinatura parametro_assinatura;
+
+    parametro_assinatura =
+        {primitivo} tipo
+        | {funcao} assinatura;
+
+    declaracao_constante =
+        {definicao} tipo id_const exp;
+
+    argumentos =
+        {unico} argumento
+        | {varios} argumentos argumento;
+
+    argumento =
+        {expressao} exp
+        | {funcao} id_funcao;
+
+    clausula =
+        {caso} [condicao]:exp [resultado]:exp;
+
+    exp =
+        {ou} [esq]:exp [dir]:exp
+        | {e} [esq]:exp [dir]:exp
+        | {igual} [esq]:exp [dir]:exp
+        | {maior} [esq]:exp [dir]:exp
+        | {menor} [esq]:exp [dir]:exp
+        | {soma} [esq]:exp [dir]:exp
+        | {subtracao} [esq]:exp [dir]:exp
+        | {multiplicacao} [esq]:exp [dir]:exp
+        | {divisao} [esq]:exp [dir]:exp
+        | {divisao_inteira} [esq]:exp [dir]:exp
+        | {resto} [esq]:exp [dir]:exp
+        | {potencia} [base]:exp [expoente]:exp
+        | {menos_unario} exp
+        | {negacao} exp
+        | {inteiro} numeral_int
+        | {real} numeral_real
+        | {booleano} literal_booleano
+        | {identificador} id
+        | {constante} id_const
+        | {bloco} declaracao_constante+ exp
+        | {chamada} id_funcao argumentos?
+        | {guarda} clausula+ exp;
