@@ -1,6 +1,6 @@
+log.txt
 bin/
-.settings/
-.classpath
-.project
-.metadada/
-*.class
+Tree.txt
+other/
+resultados_sintaticos/
+etapa3/

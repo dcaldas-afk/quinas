@@ -1,0 +1,3 @@
+[numero Max[numero xx | numero yy] : [[|| <xx >> yy> = xx || # = yy]]]
+[numero Aplicar[numero xx | numero yy | numero Operador[numero | numero]] : [Operador[xx | yy]]]
+++ [numero Principal[] : [Aplicar[7 | 5 | Max]]]

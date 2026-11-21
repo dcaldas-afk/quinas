@@ -1,0 +1,2 @@
+[numero Fat[numero xx] : [[|| xx << 2 = 1 || # = xx . Fat[xx - 1]]]]
+++ [numero Principal[] : [Fat[4]]]

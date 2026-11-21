@@ -1,0 +1,2 @@
+[numero Soma[numero xx | numero yy] : [xx + yy]]
+++ [numero Principal[] : [Soma[2 | 3]]]
